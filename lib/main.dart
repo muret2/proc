@@ -6,7 +6,7 @@ void main() {
     MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 142, 201, 233),
         //appBar: AppBar(
         //  backgroundColor: Colors.green,
         //  title: Text("Login screen", style: TextStyle(color: Colors.white)),
@@ -19,7 +19,7 @@ void main() {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset('lock.jpg'),
+                Image.asset('real.jpg'),
                 Text(
                   "Login Screen",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
@@ -81,7 +81,10 @@ void main() {
                   ),
                   child: Text(
                     "Login",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(
+                      color: const Color.fromARGB(255, 106, 8, 81),
+                      fontSize: 16,
+                    ),
                   ),
                 ),
                 Padding(

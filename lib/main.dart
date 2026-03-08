@@ -6,12 +6,31 @@ void main() {
     MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 142, 201, 233),
-        //appBar: AppBar(
-        //  backgroundColor: Colors.green,
-        //  title: Text("Login screen", style: TextStyle(color: Colors.white)),
-        //  centerTitle: true,
-        //),
+        backgroundColor: const Color.fromARGB(255, 229, 229, 63),
+        appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 183, 149, 9),
+          elevation: 0,
+          leading: Icon(Icons.menu),
+          title: Text(
+            "Great Coffee",
+            style: TextStyle(color: const Color.fromARGB(255, 50, 63, 6)),
+          ),
+          centerTitle: true,
+          actions: [IconButton(onPressed: () {}, icon: Icon(Icons.logout))],
+        ),
+        drawer: Drawer(
+          backgroundColor: Colors.deepPurple,
+          child: Column(
+            children: [
+              DrawerHeader(child: Icon(Icons.accessibility, size: 48)),
+              ListTile(leading: Icon(Icons.home), title: Text(" H O M E")),
+              ListTile(
+                leading: Icon(Icons.settings),
+                title: Text(" S E T T I N G S"),
+              ),
+            ],
+          ),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
@@ -19,9 +38,9 @@ void main() {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset('real.jpg'),
+                Image.asset('coffe.jpg', height: 200, fit: BoxFit.cover),
                 Text(
-                  "Login Screen",
+                  "",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
                 ),
                 Row(
@@ -66,8 +85,8 @@ void main() {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    hintText: "Pin or password",
-                    prefixIcon: Icon(Icons.person),
+                    hintText: " password",
+                    prefixIcon: Icon(Icons.key),
                   ),
                 ),
                 SizedBox(height: 30),
@@ -79,23 +98,36 @@ void main() {
                     color: primaryColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(
-                    "Login",
-                    style: TextStyle(
-                      color: const Color.fromARGB(255, 106, 8, 81),
-                      fontSize: 16,
+
+                  child: GestureDetector(
+                    child: Text(
+                      "Login",
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 106, 8, 81),
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
                   child: Row(
                     children: [
                       Text("Don't have an account?"),
-                      SizedBox(width: 5),
-                      Text("Sign up", style: TextStyle(color: Colors.blue)),
+                      Text(
+                        "Sign up",
+                        style: TextStyle(
+                          color: const Color.fromARGB(255, 182, 22, 22),
+                        ),
+                      ),
                       Text("Forgot password?"),
-                      Text("Reset"),
+                      Text(
+                        "Reset",
+                        style: TextStyle(
+                          color: const Color.fromARGB(255, 182, 22, 22),
+                        ),
+                      ),
                     ],
                   ),
                 ),

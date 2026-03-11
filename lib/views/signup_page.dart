@@ -48,7 +48,7 @@ class SignUpPage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              /// EMAIL
+              // EMAIL
               Row(
                 children: const [
                   Text(
@@ -135,7 +135,7 @@ class SignUpPage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              /// LOGIN LINK
+              //LOGIN LINK
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

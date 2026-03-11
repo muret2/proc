@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/views/home_page.dart';
 import 'package:flutter_application_1/views/signup_page.dart';
 
-class loginpage extends StatelessWidget {
-  const loginpage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,15 +92,20 @@ class loginpage extends StatelessWidget {
               ),
               SizedBox(height: 30),
 
-              Container(
-                height: 50,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.yellow[400],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-
-                child: GestureDetector(
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+                },
+                child: Container(
+                  height: 50,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.yellow[400],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   child: Text(
                     "Login",
                     style: TextStyle(

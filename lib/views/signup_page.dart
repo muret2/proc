@@ -22,7 +22,7 @@ class SignUpPage extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
 
-              Image.asset('logog.jpg', height: 180),
+              Image.asset('assets/logog.jpg', height: 180),
 
               const SizedBox(height: 20),
 

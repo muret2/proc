@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset('logog.jpg', height: 200, fit: BoxFit.cover),
+              Image.asset('assets/logog.jpg', height: 200, fit: BoxFit.cover),
               Text(
                 "",
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),

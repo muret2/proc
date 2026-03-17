@@ -17,26 +17,11 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         elevation: 0,
-        leading: Icon(Icons.menu),
         title: Text(
           "Great Coffee",
           style: TextStyle(color: const Color.fromARGB(255, 50, 63, 6)),
         ),
         centerTitle: true,
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.logout))],
-      ),
-      drawer: Drawer(
-        backgroundColor: Colors.deepPurple,
-        child: Column(
-          children: [
-            DrawerHeader(child: Icon(Icons.accessibility, size: 48)),
-            ListTile(leading: Icon(Icons.home), title: Text(" H O M E")),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text(" S E T T I N G S"),
-            ),
-          ],
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -141,7 +126,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    Text("Forgot password?"),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Forgot password?"),
+                    ),
                     Text("Reset", style: TextStyle(color: Colors.blue[500])),
                   ],
                 ),

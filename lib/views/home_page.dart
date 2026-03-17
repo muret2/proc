@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/views/oders_page.dart';
+import 'package:flutter_application_1/views/profile_page.dart';
 
 import '../controllers/bottom_nav_bar.dart';
 import 'cart_page.dart';
@@ -30,6 +32,12 @@ class _HomePageState extends State<HomePage> {
 
     //cart page
     const CartPage(),
+
+    //oders page
+    const OdersPage(),
+
+    //profile page
+    const ProfilePage(),
   ];
 
   @override
@@ -53,6 +61,14 @@ class _HomePageState extends State<HomePage> {
             },
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, "/login");
+            },
+            icon: Icon(Icons.logout),
+          ),
+        ],
       ),
       drawer: Drawer(
         backgroundColor: Colors.white,
@@ -79,11 +95,21 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: ListTile(
-                leading: Icon(Icons.logout, color: Colors.amber),
-                title: Text('logout', style: TextStyle(color: Colors.red)),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, "/login");
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: ListTile(
+                  leading: Icon(Icons.logout, color: Colors.amber),
+                  title: Text('logout', style: TextStyle(color: Colors.red)),
+                ),
               ),
             ),
           ],

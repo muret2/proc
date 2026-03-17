@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/views/oders_page.dart';
+import 'package:flutter_application_1/controllers/bottom_nav_bar.dart';
+import 'package:flutter_application_1/views/orders_page.dart';
 import 'package:flutter_application_1/views/profile_page.dart';
+import 'package:get/get.dart';
 
-import '../controllers/bottom_nav_bar.dart';
 import 'cart_page.dart';
 import 'shop_page.dart';
 
@@ -14,10 +15,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  //this selects index is to control the bottom nav bar
+  // Controls which page is shown
   int _selectedIndex = 0;
-
-  //this method will update our selectedIndex
 
   void navigateBottomBar(int index) {
     setState(() {
@@ -25,18 +24,11 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  //pages to display
+  // Pages to display
   final List<Widget> _pages = [
-    //Shop page
     const ShopPage(),
-
-    //cart page
     const CartPage(),
-
-    //oders page
-    const OdersPage(),
-
-    //profile page
+    const OrdersPage(), // fixed: was OdersPage
     const ProfilePage(),
   ];
 
@@ -52,8 +44,8 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.transparent,
         leading: Builder(
           builder: (context) => IconButton(
-            icon: Padding(
-              padding: const EdgeInsets.only(left: 12.0),
+            icon: const Padding(
+              padding: EdgeInsets.only(left: 12.0),
               child: Icon(Icons.menu),
             ),
             onPressed: () {
@@ -63,10 +55,8 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, "/login");
-            },
-            icon: Icon(Icons.logout),
+            onPressed: () => Get.offAllNamed('/'),
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
@@ -77,45 +67,51 @@ class _HomePageState extends State<HomePage> {
           children: [
             Column(
               children: [
-                //logo
-                DrawerHeader(child: Image.asset('logo.jpg')),
+                // Logo
+                DrawerHeader(child: Image.asset('assets/logo.jpg')),
                 Padding(
-                  padding: const EdgeInsets.all(25.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: ListTile(
-                    leading: Icon(Icons.home, color: Colors.amber),
-                    title: Text('HOME', style: TextStyle(color: Colors.red)),
+                    leading: const Icon(Icons.home, color: Colors.amber),
+                    title: const Text(
+                      'HOME',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context); // close drawer
+                      navigateBottomBar(0); // go to shop
+                    },
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(25.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: ListTile(
-                    leading: Icon(Icons.info, color: Colors.amber),
-                    title: Text('ABOUT', style: TextStyle(color: Colors.red)),
+                    leading: const Icon(Icons.info, color: Colors.amber),
+                    title: const Text(
+                      'ABOUT',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    onTap: () => Navigator.pop(context),
                   ),
                 ),
               ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, "/login");
-              },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+
+            // Logout at bottom of drawer
+            Padding(
+              padding: const EdgeInsets.all(25),
+              child: ListTile(
+                leading: const Icon(Icons.logout, color: Colors.amber),
+                title: const Text(
+                  'Logout',
+                  style: TextStyle(color: Colors.red),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: ListTile(
-                  leading: Icon(Icons.logout, color: Colors.amber),
-                  title: Text('logout', style: TextStyle(color: Colors.red)),
-                ),
+                onTap: () => Get.offAllNamed('/'),
               ),
             ),
           ],
         ),
       ),
-
       body: _pages[_selectedIndex],
     );
   }

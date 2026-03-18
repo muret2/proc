@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controllers/login_controller.dart';
 import 'package:flutter_application_1/views/home_page.dart';
 import 'package:flutter_application_1/views/signup_page.dart';
+import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,6 +12,17 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController userpasswordController = TextEditingController();
+  final LoginController loginController = Get.put(LoginController());
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    userpasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,10 +44,7 @@ class _LoginPageState extends State<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset('assets/logog.jpg', height: 200, fit: BoxFit.cover),
-              Text(
-                "",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
-              ),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -45,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
               TextField(
+                controller: usernameController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -53,36 +64,53 @@ class _LoginPageState extends State<LoginPage> {
                   prefixIcon: Icon(Icons.person),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                child: SizedBox(height: 30),
-              ),
+              SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    "Enter password",
+                    "Enter Password",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                   ),
                 ],
               ),
-              TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+              Obx(
+                () => TextField(
+                  controller: userpasswordController,
+                  obscureText: !loginController.isPassVisible.value,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    hintText: "Password",
+                    prefixIcon: Icon(Icons.lock),
+                    suffixIcon: Icon(
+                      loginController.isPassVisible.value
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
                   ),
-                  hintText: " password",
-                  prefixIcon: Icon(Icons.key),
                 ),
               ),
               SizedBox(height: 30),
-
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  bool success = loginController.login(
+                    usernameController.text,
+                    userpasswordController.text,
                   );
+                  if (success) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                    );
+                  } else {
+                    Get.snackbar(
+                      "Login Failed",
+                      "Invalid username or password",
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  }
                 },
                 child: Container(
                   height: 50,
@@ -100,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-
+              SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
                 child: Row(
@@ -116,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                       child: Padding(
-                        padding: EdgeInsets.symmetric(),
+                        padding: EdgeInsets.symmetric(horizontal: 4),
                         child: Text(
                           "Sign up",
                           style: TextStyle(

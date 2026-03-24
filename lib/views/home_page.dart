@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/controllers/bottom_nav_bar.dart';
+import 'package:flutter_application_1/views/cart_page.dart';
 import 'package:flutter_application_1/views/orders_page.dart';
 import 'package:flutter_application_1/views/profile_page.dart';
+import 'package:flutter_application_1/views/shop_page.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:get/get.dart';
-
-import 'cart_page.dart';
-import 'shop_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,7 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Controls which page is shown
   int _selectedIndex = 0;
 
   void navigateBottomBar(int index) {
@@ -24,11 +22,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  // Pages to display
   final List<Widget> _pages = [
     const ShopPage(),
     const CartPage(),
-    const OrdersPage(), // fixed: was OdersPage
+    const OrdersPage(),
     const ProfilePage(),
   ];
 
@@ -36,8 +33,23 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      bottomNavigationBar: MyBottomNavBar(
-        onTabChange: (index) => navigateBottomBar(index),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: GNav(
+          color: Colors.grey[500],
+          activeColor: Colors.grey[800],
+          tabActiveBorder: Border.all(color: Colors.white),
+          tabBackgroundColor: Colors.grey.shade300,
+          mainAxisAlignment: MainAxisAlignment.center,
+          tabBorderRadius: 16,
+          onTabChange: (value) => navigateBottomBar(value),
+          tabs: const [
+            GButton(icon: Icons.home, text: 'Shop'),
+            GButton(icon: Icons.shopping_cart, text: 'Cart'),
+            GButton(icon: Icons.shopping_bag_rounded, text: 'Orders'),
+            GButton(icon: Icons.person, text: 'Profile'),
+          ],
+        ),
       ),
       appBar: AppBar(
         elevation: 0,
@@ -48,9 +60,7 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.only(left: 12.0),
               child: Icon(Icons.menu),
             ),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
+            onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
         actions: [
@@ -67,7 +77,6 @@ class _HomePageState extends State<HomePage> {
           children: [
             Column(
               children: [
-                // Logo
                 DrawerHeader(child: Image.asset('assets/logo.jpg')),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -78,8 +87,8 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(color: Colors.red),
                     ),
                     onTap: () {
-                      Navigator.pop(context); // close drawer
-                      navigateBottomBar(0); // go to shop
+                      Navigator.pop(context);
+                      navigateBottomBar(0);
                     },
                   ),
                 ),
@@ -96,8 +105,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-
-            // Logout at bottom of drawer
             Padding(
               padding: const EdgeInsets.all(25),
               child: ListTile(

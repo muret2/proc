@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controllers/login_controller.dart';
-import 'package:flutter_application_1/views/home_page.dart';
-import 'package:flutter_application_1/views/signup_page.dart';
 import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
@@ -84,26 +82,27 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     hintText: "Password",
                     prefixIcon: Icon(Icons.lock),
-                    suffixIcon: Icon(
-                      loginController.isPassVisible.value
-                          ? Icons.visibility_off
-                          : Icons.visibility,
+                    suffixIcon: GestureDetector(
+                      onTap: () => loginController.togglePassword(),
+                      child: Icon(
+                        loginController.isPassVisible.value
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
                     ),
                   ),
                 ),
               ),
               SizedBox(height: 30),
               GestureDetector(
-                onTap: () {
-                  bool success = loginController.login(
+                onTap: () async {
+                  bool success = await loginController.login(
                     usernameController.text,
                     userpasswordController.text,
                   );
+
                   if (success) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                    );
+                    Get.toNamed('/homepage');
                   } else {
                     Get.snackbar(
                       "Login Failed",
@@ -136,12 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                     Text("Don't have an account?"),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SignUpPage(),
-                          ),
-                        );
+                        Get.toNamed('/signup');
                       },
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 4),

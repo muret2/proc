@@ -28,7 +28,7 @@ class CartController extends GetxController {
       cartItems.add({...product, "quantity": 1});
     }
     Get.snackbar(
-      "Added to Cart ☕",
+      "Added to Cart ",
       "${product["name"]} added successfully",
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: Colors.brown[100],
@@ -114,7 +114,7 @@ class CartController extends GetxController {
       // Refresh orders list and profile stats
       Get.find<OrdersController>().fetchOrders();
       Get.snackbar(
-        "Order Placed! ☕",
+        "Order Placed! ",
         "Your Great Coffee is being prepared",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green[100],

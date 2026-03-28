@@ -1,57 +1,15 @@
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class DatabaseService {
-  static Database? _db;
+  // Change this based on where you run the app
+  // Chrome / browser:       http://localhost/coffee_api
+  // Android emulator:       http://10.0.2.2/coffee_api
+  // Real phone (same WiFi): http://YOUR_PC_IP/coffee_api
+  //static const String _base = 'http://localhost/coffee_api';
+   static const String _base = 'http://192.168.5.111/coffee_api';
 
-  static Future<Database> get database async {
-    if (_db != null) return _db!;
-    _db = await _initDB();
-    return _db!;
-  }
-
-  static Future<Database> _initDB() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'greatcoffee.db');
-
-    return await openDatabase(
-      path,
-      version: 2, // bumped for migration
-      onCreate: (db, version) async {
-        await db.execute('''
-          CREATE TABLE users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            phone TEXT,
-            password TEXT NOT NULL,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP
-          )
-        ''');
-
-        await db.execute('''
-          CREATE TABLE orders (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            items TEXT NOT NULL,
-            total REAL NOT NULL,
-            status TEXT DEFAULT 'processing',
-            note TEXT,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id)
-          )
-        ''');
-      },
-      onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 2) {
-          // Add note column to existing orders table
-          await db.execute('ALTER TABLE orders ADD COLUMN note TEXT');
-        }
-      },
-    );
-  }
-
-  // ── SIGNUP ──────────────────────────────────────
+  // SIGNUP
   static Future<Map<String, dynamic>> signup({
     required String name,
     required String email,
@@ -59,289 +17,247 @@ class DatabaseService {
     required String password,
   }) async {
     try {
-      final db = await database;
-
-      final existing = await db.query(
-        'users',
-        where: 'email = ?',
-        whereArgs: [email],
+      final res = await http.post(
+        Uri.parse('$_base/users.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'signup',
+          'name': name,
+          'email': email,
+          'phone': phone,
+          'password': password,
+        }),
       );
-
-      if (existing.isNotEmpty) {
-        return {"success": false, "message": "Email already registered"};
-      }
-
-      await db.insert('users', {
-        "name": name,
-        "email": email,
-        "phone": phone,
-        "password": password,
-        "created_at": DateTime.now().toIso8601String(),
-      });
-
-      return {"success": true, "message": "Account created successfully"};
+      return jsonDecode(res.body);
     } catch (e) {
-      return {"success": false, "message": "Signup failed: $e"};
+      return {'success': false, 'message': 'Network error: $e'};
     }
   }
 
-  // ── LOGIN ───────────────────────────────────────
+  //  LOGIN
   static Future<Map<String, dynamic>> login({
     required String username,
     required String password,
   }) async {
     try {
-      final db = await database;
-
-      final result = await db.query(
-        'users',
-        where: '(email = ? OR phone = ?) AND password = ?',
-        whereArgs: [username, username, password],
+      final res = await http.post(
+        Uri.parse('$_base/users.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'login',
+          'username': username,
+          'password': password,
+        }),
       );
-
-      if (result.isEmpty) {
-        return {"success": false, "message": "Invalid username or password"};
-      }
-
-      final user = result.first;
-
-      final orders = await db.query(
-        'orders',
-        where: 'user_id = ?',
-        whereArgs: [user['id']],
-      );
-
-      final totalSpent = orders.fold<double>(
-        0,
-        (sum, o) => sum + (o['total'] as num).toDouble(),
-      );
-
-      final createdAt = DateTime.parse(user['created_at'] as String);
-      final memberSince = '${_monthName(createdAt.month)} ${createdAt.year}';
-
-      return {
-        "success": true,
-        "user": {
-          "id": user['id'],
-          "name": user['name'],
-          "email": user['email'],
-          "phone": user['phone'],
-          "total_orders": orders.length,
-          "total_spent": totalSpent.toInt(),
-          "member_since": memberSince,
-        },
-      };
+      return jsonDecode(res.body);
     } catch (e) {
-      return {"success": false, "message": "Login failed: $e"};
+      return {'success': false, 'message': 'Network error: $e'};
     }
   }
 
-  // ── UPDATE PROFILE (name & phone) ───────────────
+  // UPDATE PROFILE
   static Future<Map<String, dynamic>> updateProfile({
     required int userId,
     required String name,
     required String phone,
+    String address = '',
   }) async {
     try {
-      final db = await database;
-      await db.update(
-        'users',
-        {"name": name, "phone": phone},
-        where: 'id = ?',
-        whereArgs: [userId],
+      final res = await http.post(
+        Uri.parse('$_base/users.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'update_profile',
+          'user_id': userId,
+          'name': name,
+          'phone': phone,
+          'address': address,
+        }),
       );
-      return {"success": true, "message": "Profile updated"};
+      return jsonDecode(res.body);
     } catch (e) {
-      return {"success": false, "message": "Update failed: $e"};
+      return {'success': false, 'message': 'Network error: $e'};
     }
   }
 
-  // ── UPDATE EMAIL ────────────────────────────────
+  // UPDATE EMAIL
   static Future<Map<String, dynamic>> updateEmail({
     required int userId,
     required String newEmail,
     required String currentPassword,
   }) async {
     try {
-      final db = await database;
-
-      // Verify current password first
-      final user = await db.query(
-        'users',
-        where: 'id = ? AND password = ?',
-        whereArgs: [userId, currentPassword],
+      final res = await http.post(
+        Uri.parse('$_base/users.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'update_email',
+          'user_id': userId,
+          'new_email': newEmail,
+          'current_password': currentPassword,
+        }),
       );
-
-      if (user.isEmpty) {
-        return {
-          "success": false,
-          "message": "Incorrect password. Please try again.",
-        };
-      }
-
-      // Check email not already taken
-      final existing = await db.query(
-        'users',
-        where: 'email = ? AND id != ?',
-        whereArgs: [newEmail, userId],
-      );
-
-      if (existing.isNotEmpty) {
-        return {"success": false, "message": "This email is already in use"};
-      }
-
-      await db.update(
-        'users',
-        {"email": newEmail},
-        where: 'id = ?',
-        whereArgs: [userId],
-      );
-
-      return {"success": true, "message": "Email updated"};
+      return jsonDecode(res.body);
     } catch (e) {
-      return {"success": false, "message": "Email update failed: $e"};
+      return {'success': false, 'message': 'Network error: $e'};
     }
   }
 
-  // ── CHANGE PASSWORD ─────────────────────────────
+  // CHANGE PASSWORD
   static Future<Map<String, dynamic>> changePassword({
     required int userId,
     required String currentPassword,
     required String newPassword,
   }) async {
     try {
-      final db = await database;
-
-      // Verify current password
-      final user = await db.query(
-        'users',
-        where: 'id = ? AND password = ?',
-        whereArgs: [userId, currentPassword],
+      final res = await http.post(
+        Uri.parse('$_base/users.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'change_password',
+          'user_id': userId,
+          'current_password': currentPassword,
+          'new_password': newPassword,
+        }),
       );
-
-      if (user.isEmpty) {
-        return {"success": false, "message": "Current password is incorrect"};
-      }
-
-      await db.update(
-        'users',
-        {"password": newPassword},
-        where: 'id = ?',
-        whereArgs: [userId],
-      );
-
-      return {"success": true, "message": "Password changed"};
+      return jsonDecode(res.body);
     } catch (e) {
-      return {"success": false, "message": "Password change failed: $e"};
+      return {'success': false, 'message': 'Network error: $e'};
     }
   }
 
-  // ── PLACE ORDER ─────────────────────────────────
+  // GET PRODUCTS
+  static Future<Map<String, dynamic>> getProducts({
+    String category = '',
+  }) async {
+    try {
+      final url = category.isEmpty
+          ? '$_base/products.php'
+          : '$_base/products.php?category=$category';
+      final res = await http.get(Uri.parse(url));
+      return jsonDecode(res.body);
+    } catch (e) {
+      return {'success': false, 'message': 'Network error: $e'};
+    }
+  }
+
+  // PLACE ORDER
   static Future<Map<String, dynamic>> placeOrder({
     required int userId,
     required List<Map<String, dynamic>> items,
     required double total,
+    String deliveryAddress = '',
     String? note,
   }) async {
     try {
-      final db = await database;
-      await db.insert('orders', {
-        "user_id": userId,
-        "items": items
-            .map(
-              (i) => '${i["name"]}|${i["qty"] ?? i["quantity"]}|${i["price"]}',
-            )
-            .join(','),
-        "total": total,
-        "status": "processing",
-        "note": note,
-        "created_at": DateTime.now().toIso8601String(),
-      });
-      return {"success": true, "message": "Order placed"};
+      final orderItems = items
+          .map(
+            (item) => {
+              'product_id': item['id'],
+              'quantity': item['qty'] ?? item['quantity'] ?? 1,
+              'unit_price': item['price'],
+            },
+          )
+          .toList();
+
+      final res = await http.post(
+        Uri.parse('$_base/orders.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'place',
+          'user_id': userId,
+          'total_price': total,
+          'delivery_address': deliveryAddress,
+          'notes': note ?? '',
+          'items': orderItems,
+        }),
+      );
+      return jsonDecode(res.body);
     } catch (e) {
-      return {"success": false, "message": "Order failed: $e"};
+      return {'success': false, 'message': 'Network error: $e'};
     }
   }
 
-  // ── UPDATE ORDER STATUS ─────────────────────────
+  // GET ORDERS
+  static Future<Map<String, dynamic>> getOrders(int userId) async {
+    try {
+      final res = await http.post(
+        Uri.parse('$_base/orders.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'action': 'get', 'user_id': userId}),
+      );
+
+      final decoded = jsonDecode(res.body);
+      if (decoded['success'] != true) return decoded;
+
+      final List data = decoded['data'];
+      final orders = data.map((o) {
+        final List rawItems = o['items'] ?? [];
+        final items = rawItems
+            .map(
+              (i) => {
+                'name': i['product_name'] ?? '',
+                'qty': i['quantity'] ?? 1,
+                'price': double.tryParse(i['unit_price'].toString()) ?? 0.0,
+              },
+            )
+            .toList();
+
+        return {
+          'id': '#ORD-${o['id'].toString().padLeft(3, '0')}',
+          'items': items,
+          'total': double.tryParse(o['total_price'].toString()) ?? 0.0,
+          'status': o['status'] ?? 'pending',
+          'note': o['notes'] ?? '',
+          'date': o['created_at'] ?? DateTime.now().toIso8601String(),
+        };
+      }).toList();
+
+      return {'success': true, 'data': orders};
+    } catch (e) {
+      return {'success': false, 'message': 'Network error: $e'};
+    }
+  }
+
+  // UPDATE ORDER STATUS
   static Future<Map<String, dynamic>> updateOrderStatus({
     required int orderId,
     required String status,
   }) async {
     try {
-      final db = await database;
-      final count = await db.update(
-        'orders',
-        {"status": status},
-        where: 'id = ?',
-        whereArgs: [orderId],
+      final res = await http.post(
+        Uri.parse('$_base/orders.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'update_status',
+          'order_id': orderId,
+          'status': status,
+        }),
       );
-
-      if (count == 0) {
-        return {"success": false, "message": "Order not found"};
-      }
-
-      return {"success": true, "message": "Order status updated"};
+      return jsonDecode(res.body);
     } catch (e) {
-      return {"success": false, "message": "Could not update order: $e"};
+      return {'success': false, 'message': 'Network error: $e'};
     }
   }
 
-  // ── GET ORDERS ──────────────────────────────────
-  static Future<Map<String, dynamic>> getOrders(int userId) async {
+  //  CANCEL ORDER
+  static Future<Map<String, dynamic>> cancelOrder({
+    required int orderId,
+    required int userId,
+  }) async {
     try {
-      final db = await database;
-      final rows = await db.query(
-        'orders',
-        where: 'user_id = ?',
-        whereArgs: [userId],
-        orderBy: 'created_at DESC',
+      final res = await http.post(
+        Uri.parse('$_base/orders.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'cancel',
+          'order_id': orderId,
+          'user_id': userId,
+        }),
       );
-
-      final orders = rows.map((row) {
-        final itemStrings = (row['items'] as String).split(',');
-        final items = itemStrings.map((s) {
-          final parts = s.split('|');
-          return {
-            'name': parts[0],
-            'qty': int.tryParse(parts[1]) ?? 1,
-            'price': double.tryParse(parts[2]) ?? 0.0,
-          };
-        }).toList();
-
-        return {
-          "id": '#ORD-${row['id'].toString().padLeft(3, '0')}',
-          "items": items,
-          "total": row['total'],
-          "status": row['status'],
-          "note": row['note'],
-          "date": row['created_at'],
-        };
-      }).toList();
-
-      return {"success": true, "data": orders};
+      return jsonDecode(res.body);
     } catch (e) {
-      return {"success": false, "message": "Could not load orders: $e"};
+      return {'success': false, 'message': 'Network error: $e'};
     }
-  }
-
-  // ── HELPER ──────────────────────────────────────
-  static String _monthName(int month) {
-    const months = [
-      '',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return months[month];
   }
 }

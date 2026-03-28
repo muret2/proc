@@ -95,7 +95,7 @@ class SignupController extends GetxController {
       passwordController.clear();
       confirmPasswordController.clear();
       Get.snackbar(
-        "Welcome to Great Coffee! ☕",
+        "Welcome to Great Coffee!",
         "Account created. Please login.",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green[100],

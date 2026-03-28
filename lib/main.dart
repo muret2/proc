@@ -24,7 +24,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Pure GetX — no Provider wrapper needed
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialBinding: BindingsBuilder(() {

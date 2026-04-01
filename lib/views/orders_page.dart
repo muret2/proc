@@ -70,7 +70,7 @@ class OrdersPage extends StatelessWidget {
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  // ── CANCEL CONFIRMATION DIALOG ───────────────────
+  //  CANCEL CONFIRMATION DIALOG
   void _showCancelDialog(
     BuildContext context,
     Order order,
@@ -115,7 +115,7 @@ class OrdersPage extends StatelessWidget {
     );
   }
 
-  // ── CUSTOM REQUEST BOTTOM SHEET ──────────────────
+  // CUSTOM REQUEST BOTTOM SHEET
   void _showCustomRequestSheet(
     BuildContext context,
     OrdersController controller,
@@ -310,7 +310,7 @@ class OrdersPage extends StatelessWidget {
             children: [
               const SizedBox(height: 10),
 
-              // ── Header row ──────────────────────────
+              //  Header row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -374,7 +374,7 @@ class OrdersPage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // ── Filter chips ───────────────────────
+              //  Filter chips
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -428,7 +428,7 @@ class OrdersPage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // ── Empty state ────────────────────────
+              //  Empty state
               if (orders.isEmpty)
                 Center(
                   child: Padding(
@@ -480,7 +480,7 @@ class OrdersPage extends StatelessWidget {
                     ),
                   ),
                 )
-              // ── Order cards ────────────────────────
+              //  Order card
               else
                 ListView.separated(
                   shrinkWrap: true,
@@ -769,7 +769,7 @@ class OrdersPage extends StatelessWidget {
   }
 }
 
-// ── Summary filter chip ────────────────────────────
+//  Summary filter chip
 class _SummaryChip extends StatelessWidget {
   final String label;
   final int count;

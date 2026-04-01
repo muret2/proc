@@ -22,7 +22,7 @@ class CartPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
-            // ── Header ────────────────────────────────
+            //  Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -47,7 +47,7 @@ class CartPage extends StatelessWidget {
             ),
             const SizedBox(height: 6),
 
-            // ── Empty state ───────────────────────────
+            //  Empty state
             if (items.isEmpty)
               Expanded(
                 child: Center(
@@ -78,7 +78,7 @@ class CartPage extends StatelessWidget {
                 ),
               )
             else ...[
-              // ── Cart item list ────────────────────────
+              //  Cart item list
               Expanded(
                 child: ListView.separated(
                   itemCount: items.length,
@@ -195,7 +195,7 @@ class CartPage extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              // ── Summary + Place Order ─────────────────
+              //  Summary + Place Order
               Container(
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
@@ -306,7 +306,7 @@ class CartPage extends StatelessWidget {
   }
 }
 
-// ── +/- button widget ─────────────────────────────
+//  +/- button widget
 class _QtyButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;

@@ -15,7 +15,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final ProfileController profileController = Get.find<ProfileController>();
 
-  // ── EDIT PROFILE SHEET ───────────────────────────
+  //  EDIT PROFILE SHEET
   void _showEditDialog() {
     final nameController = TextEditingController(
       text: profileController.name.value,
@@ -133,7 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // ── CHANGE EMAIL SHEET ───────────────────────────
+  //  CHANGE EMAIL SHEET
   void _showChangeEmailSheet() {
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
@@ -285,7 +285,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // ── CHANGE PASSWORD SHEET ────────────────────────
+  //  CHANGE PASSWORD SHEET
   void _showChangePasswordSheet() {
     final currentController = TextEditingController();
     final newController = TextEditingController();
@@ -489,7 +489,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // ── REUSABLE TEXT FIELD ──────────────────────────
+  //  REUSABLE TEXT FIELD
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -529,7 +529,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 20),
 
-              // ── Profile card ───────────────────────
+              //  Profile card
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -636,7 +636,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
               const SizedBox(height: 20),
 
-              // ── Stat cards ─────────────────────────
+              //  Stat cards
               Row(
                 children: [
                   Expanded(
@@ -676,7 +676,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
               const SizedBox(height: 24),
 
-              // ── Account settings ───────────────────
+              //  Account settings
               const Text(
                 'Account',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -722,7 +722,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
               const SizedBox(height: 20),
 
-              // ── App settings ───────────────────────
+              //  App settings
               const Text(
                 'Settings',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -762,7 +762,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
               const SizedBox(height: 16),
 
-              // ── More ───────────────────────────────
+              //  More
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -800,7 +800,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
               const SizedBox(height: 16),
 
-              // ── Logout ─────────────────────────────
+              //  Logout
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -863,7 +863,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-// ── Stat card widget ─────────────────────────────
+//  Stat card widget
 class _StatCard extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -910,7 +910,7 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-// ── Toggle tile widget ────────────────────────────
+//  Toggle tile widget
 class _ToggleTile extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -938,7 +938,7 @@ class _ToggleTile extends StatelessWidget {
   }
 }
 
-// ── Action tile widget ────────────────────────────
+//Action tile widget
 class _ActionTile extends StatelessWidget {
   final IconData icon;
   final String label;

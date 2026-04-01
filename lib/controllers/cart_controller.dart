@@ -70,66 +70,65 @@ class CartController extends GetxController {
   void clearCart() => cartItems.clear();
 
   Future<bool> checkout() async {
-    if (cartItems.isEmpty) {
-      Get.snackbar(
-        "Empty Cart",
-        "Add some coffee before placing an order!",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.amber[100],
-        colorText: Colors.brown[800],
-      );
-      return false;
-    }
+      if (cartItems.isEmpty) {
+        Get.snackbar(
+          "Empty Cart",
+          "Add some coffee before placing an order!",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.amber[100],
+          colorText: Colors.brown[800],
+        );
+        return false;
+      }
 
-    final userId = Get.find<ProfileController>().userId.value;
-    if (userId.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please login to place an order",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red[100],
-        colorText: Colors.red[800],
-      );
-      return false;
-    }
+      final userId = Get.find<ProfileController>().userId.value;
+      if (userId.isEmpty) {
+        Get.snackbar(
+          "Error",
+          "Please login to place an order",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red[100],
+          colorText: Colors.red[800],
+        );
+        return false;
+      }
 
-    isLoading.value = true;
-    final response = await DatabaseService.placeOrder(
-      userId: int.parse(userId),
-      items: cartItems
-          .map(
-            (item) => {
-              "name": item["name"],
-              "qty": item["quantity"],
-              "price": item["price"],
-            },
-          )
-          .toList(),
-      total: totalPrice,
-    );
-    isLoading.value = false;
+      isLoading.value = true;
+      final response = await DatabaseService.placeOrder(
+        userId: int.parse(userId),
+        items: cartItems
+            .map(
+              (item) => {
+                "product_id": item["id"],
+                "quantity":   item["quantity"],
+                "unit_price": item["price"],
+              },
+            )
+            .toList(),
+        total: totalPrice,
+      );
+      isLoading.value = false;
 
-    if (response["success"] == true) {
-      clearCart();
-      // Refresh orders list and profile stats
-      Get.find<OrdersController>().fetchOrders();
-      Get.snackbar(
-        "Order Placed! ",
-        "Your Great Coffee is being prepared",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green[100],
-        colorText: Colors.green[800],
-      );
-      return true;
-    } else {
-      Get.snackbar(
-        "Checkout Failed",
-        response["message"] ?? "Could not place order. Try again.",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red[100],
-        colorText: Colors.red[800],
-      );
-      return false;
+      if (response["success"] == true) {
+        clearCart();
+        Get.find<OrdersController>().fetchOrders();
+        Get.snackbar(
+          "Order Placed! ",
+          "Your Great Coffee is being prepared",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green[100],
+          colorText: Colors.green[800],
+        );
+        return true;
+      } else {
+        Get.snackbar(
+          "Checkout Failed",
+          response["message"] ?? "Could not place order. Try again.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red[100],
+          colorText: Colors.red[800],
+        );
+        return false;
+      }
     }
-  }
 }

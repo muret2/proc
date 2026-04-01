@@ -7,7 +7,7 @@ class DatabaseService {
   // Android emulator:       http://10.0.2.2/coffee_api
   // Real phone (same WiFi): http://YOUR_PC_IP/coffee_api
   //static const String _base = 'http://localhost/coffee_api';
-   static const String _base = 'http://192.168.5.111/coffee_api';
+  static const String _base = 'http://10.7.6.84/coffee_api';
 
   // SIGNUP
   static Future<Map<String, dynamic>> signup({
@@ -153,9 +153,9 @@ class DatabaseService {
       final orderItems = items
           .map(
             (item) => {
-              'product_id': item['id'],
-              'quantity': item['qty'] ?? item['quantity'] ?? 1,
-              'unit_price': item['price'],
+              'product_id': item['product_id'],
+              'quantity':   item['quantity'],
+              'unit_price': item['unit_price'],
             },
           )
           .toList();
@@ -164,12 +164,12 @@ class DatabaseService {
         Uri.parse('$_base/orders.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'action': 'place',
-          'user_id': userId,
-          'total_price': total,
+          'action':           'place',
+          'user_id':          userId,
+          'total_price':      total,
           'delivery_address': deliveryAddress,
-          'notes': note ?? '',
-          'items': orderItems,
+          'notes':            note ?? '',
+          'items':            orderItems,
         }),
       );
       return jsonDecode(res.body);

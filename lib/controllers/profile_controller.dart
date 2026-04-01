@@ -12,7 +12,7 @@ class ProfileController extends GetxController {
   var userId = ''.obs;
   var isLoading = false.obs;
 
-  // ── SET USER DATA ───────────────────────────────
+  //  SET USER DATA
   void setUser(Map<String, dynamic> userData) {
     userId.value = userData["id"]?.toString() ?? '';
     name.value = userData["name"] ?? '';
@@ -23,7 +23,7 @@ class ProfileController extends GetxController {
     memberSince.value = userData["member_since"] ?? '';
   }
 
-  // ── UPDATE NAME & PHONE ─────────────────────────
+  //  UPDATE NAME & PHONE
   Future<void> updateProfile(String newName, String newPhone) async {
     if (newName.trim().isEmpty || newPhone.trim().isEmpty) {
       Get.snackbar(
@@ -75,7 +75,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  // ── UPDATE EMAIL ────────────────────────────────
+  //  UPDATE EMAIL
   Future<void> updateEmail({
     required String newEmail,
     required String currentPassword,
@@ -132,7 +132,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  // ── CHANGE PASSWORD ─────────────────────────────
+  //  CHANGE PASSWORD
   Future<void> changePassword({
     required String currentPassword,
     required String newPassword,
@@ -202,7 +202,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  // ── LOGOUT ──────────────────────────────────────
+  //  LOGOUT
   void logout() {
     userId.value = '';
     name.value = '';

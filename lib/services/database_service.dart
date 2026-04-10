@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class DatabaseService {
-  // Change this based on where you run the app
+
   // Chrome / browser:       http://localhost/coffee_api
   // Android emulator:       http://10.0.2.2/coffee_api
   // Real phone (same WiFi): http://YOUR_PC_IP/coffee_api
-  //static const String _base = 'http://localhost/coffee_api';
-  static const String _base = 'http://10.7.6.84/coffee_api';
+  static const String _base = 'http://localhost/coffee_api';
+  //static const String _base = 'http://10.7.3.157/coffee_api';
 
   // SIGNUP
   static Future<Map<String, dynamic>> signup({

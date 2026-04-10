@@ -10,7 +10,7 @@ class SignUpPage extends StatelessWidget {
     final SignupController controller = Get.find<SignupController>();
 
     return Scaffold(
-      backgroundColor: Colors.yellow[100],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: const Text(
@@ -26,7 +26,7 @@ class SignUpPage extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
 
-              Image.asset('assets/logog.jpg', height: 150),
+              Image.asset('assets/coflog.jpg', height: 150),
               const SizedBox(height: 10),
 
               // Tagline
